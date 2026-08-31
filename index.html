@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>گردونه شانس مغزوک</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/estedad-font@v5.0.1/dist/font-face.css">
+    <style>
+        :root {
+            --red-primary: #dc2626;
+            --red-hover: #b91c1c;
+            --gold-border: #e7caa1;
+            --gold-dark: #dfc181;
+            --bg-page: #f7f7f8;
+            --slice-dark: #1c1e24;
+            --slice-light: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Estedad', system-ui, -apple-system, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 16px 20px 24px;
+            position: relative;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            z-index: 10;
+        }
+
+        header h1 {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--text-main);
+            line-height: 1.2;
+        }
+
+        header p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .icon-btn {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            padding: 8px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            color: var(--red-primary);
+            border-color: #cbd5e1;
+        }
+
+        .wheel-area {
+            position: relative;
+            margin: auto 0;
+            padding: 24px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .wheel-box {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (min-width: 400px) {
+            .wheel-box {
+                width: 350px;
+                height: 350px;
+            }
+        }
+
+        .pointer {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 28px;
+            height: 48px;
+            background: var(--red-primary);
+            clip-path: polygon(50% 100%, 0% 20%, 20% 0%, 80% 0%, 100% 20%);
+            z-index: 30;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            transition: transform 0.08s ease-out;
+            transform-origin: top center;
+        }
+
+        .pointer::after {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 9px;
+            height: 9px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50%;
+        }
+
+        .wheel-rim {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 10px solid var(--gold-border);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+            pointer-events: none;
+            z-index: 10;
+            outline: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        #wheelCanvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            will-change: transform;
+        }
+
+        .center-btn-wrapper {
+            position: absolute;
+            z-index: 20;
+            width: 92px;
+            height: 92px;
+            border-radius: 50%;
+            border: 4px solid var(--gold-border);
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            padding: 6px;
+        }
+
+        .center-btn {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: var(--red-primary);
+            border: 2px solid rgba(255, 255, 255, 0.85);
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(220, 38, 38, 0.35);
+            transition: transform 0.1s, background-color 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .center-btn:active {
+            transform: scale(0.94);
+            background: var(--red-hover);
+        }
+
+        .center-btn:disabled {
+            opacity: 0.9;
+            cursor: not-allowed;
+        }
+
+        footer {
+            width: 100%;
+            z-index: 10;
+        }
+
+        .main-spin-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--red-primary);
+            color: #ffffff;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(220, 38, 38, 0.25);
+            transition: transform 0.1s, background-color 0.2s, opacity 0.2s;
+        }
+
+        .main-spin-btn:active {
+            transform: scale(0.98);
+            background: var(--red-hover);
+        }
+
+        .main-spin-btn:disabled {
+            background: #cbd5e1;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        #confettiCanvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 90;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-box {
+            background: #ffffff;
+            width: 100%;
+            max-width: 360px;
+            border-radius: 24px;
+            padding: 24px 20px;
+            text-align: center;
+            position: relative;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
+            transform: scale(0.92);
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.active .modal-box {
+            transform: scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--text-main);
+            margin: 12px 0 6px;
+        }
+
+        .modal-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .code-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .code-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .code-val-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .code-val {
+            font-family: monospace;
+            font-size: 16px;
+            font-weight: 900;
+            color: var(--red-primary);
+            background: #ffffff;
+            padding: 4px 10px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            letter-spacing: 1px;
+            text-transform: lowercase;
+        }
+
+        .copy-btn {
+            background: #e2e8f0;
+            border: none;
+            border-radius: 8px;
+            padding: 6px;
+            cursor: pointer;
+            display: flex;
+            color: #334155;
+            transition: background-color 0.15s;
+        }
+
+        .copy-btn:hover {
+            background: #cbd5e1;
+        }
+
+        .modal-action-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--red-primary);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(220, 38, 38, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .modal-action-btn:hover {
+            background: var(--red-hover);
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="confettiCanvas"></canvas>
+
+    <div class="container">
+        <header>
+            <div>
+                <h1>گردونه شانس مغزوک</h1>
+                <p>دریافت کد تخفیف اختصاصی</p>
+            </div>
+            <button class="icon-btn" id="toggleSoundBtn" title="قطع یا وصل صدا">
+                <svg id="soundIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--red-primary);">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                </svg>
+            </button>
+        </header>
+
+        <div class="wheel-area">
+            <div class="wheel-box">
+                <div class="pointer" id="pointer"></div>
+                <div class="wheel-rim"></div>
+                <canvas id="wheelCanvas"></canvas>
+                <div class="center-btn-wrapper">
+                    <button class="center-btn" id="centerSpinBtn">بچرخان</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <button class="main-spin-btn" id="mainSpinBtn">بچرخان و تخفیف بگیر</button>
+        </footer>
+    </div>
+
+    <div class="modal-overlay" id="prizeModal">
+        <div class="modal-box">
+            <button class="modal-close" id="modalCloseBtn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <h2 class="modal-title" id="modalTitle">برنده شدید</h2>
+            <p class="modal-desc" id="modalDesc">توضیحات جایزه</p>
+            
+            <div class="code-box" id="codeContainer">
+                <span class="code-label">کد تخفیف شما:</span>
+                <div class="code-val-wrapper">
+                    <span class="code-val" id="couponCode"></span>
+                    <button class="copy-btn" id="copyCodeBtn" title="کپی کد">
+                        <svg id="copyIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <button class="modal-action-btn" id="modalActionBtn">بستن</button>
+        </div>
+    </div>
+
+    <script>
+        const items = [
+            { id: 1, name: "تخفیف ۱۰٪", chance: 75, code: "m10y", color: "#1c1e24", textColor: "#ffffff", desc: "کد تخفیف ۱۰ درصدی برای سفارش از محصولات مغزوک" },
+            { id: 2, name: "تخفیف ۲۰٪", chance: 20, code: "m20zk", color: "#ffffff", textColor: "#1c1e24", desc: "کد تخفیف ۲۰ درصدی ویژه خرید محصولات مغزوک" },
+            { id: 3, name: "تخفیف ۱ میلیونی", chance: 0, code: null, color: "#1c1e24", textColor: "#ffffff", desc: "کارت هدیه خرید ۱ میلیون تومانی مغزوک" },
+            { id: 4, name: "تخفیف ۲ میلیونی", chance: 0, code: null, color: "#ffffff", textColor: "#1c1e24", desc: "جایزه ۲ میلیون تومانی مغزوک" },
+            { id: 5, name: "پوچ", chance: 0, code: null, color: "#1c1e24", textColor: "#ffffff", desc: "فرصت‌های بعدی را امتحان کنید" },
+            { id: 6, name: "یک شانس مجدد", chance: 5, code: null, color: "#ffffff", textColor: "#1c1e24", desc: "یک فرصت دیگر برای چرخش گردونه" }
+        ];
+
+        const canvas = document.getElementById('wheelCanvas');
+        const ctx = canvas.getContext('2d');
+        const pointer = document.getElementById('pointer');
+        const mainSpinBtn = document.getElementById('mainSpinBtn');
+        const centerSpinBtn = document.getElementById('centerSpinBtn');
+        const toggleSoundBtn = document.getElementById('toggleSoundBtn');
+        const soundIcon = document.getElementById('soundIcon');
+        
+        const prizeModal = document.getElementById('prizeModal');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDesc = document.getElementById('modalDesc');
+        const codeContainer = document.getElementById('codeContainer');
+        const couponCode = document.getElementById('couponCode');
+        const copyCodeBtn = document.getElementById('copyCodeBtn');
+        const copyIcon = document.getElementById('copyIcon');
+        const modalActionBtn = document.getElementById('modalActionBtn');
+        const confettiCanvas = document.getElementById('confettiCanvas');
+        const confettiCtx = confettiCanvas.getContext('2d');
+
+        const numSlices = items.length;
+        const sliceAngle = (2 * Math.PI) / numSlices;
+        const sliceDeg = 360 / numSlices;
+
+        let currentRotation = 0;
+        let isSpinning = false;
+        let soundEnabled = true;
+        let audioCtx = null;
+        let currentWinner = null;
+        let confettiAnimationId = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) audioCtx = new AudioContextClass();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playTickSound() {
+            if (!soundEnabled || !audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(540, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.03);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.03);
+            } catch (e) {}
+        }
+
+        function playWinSound() {
+            if (!soundEnabled || !audioCtx) return;
+            try {
+                const now = audioCtx.currentTime;
+                [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.09);
+                    gain.gain.setValueAtTime(0.14, now + idx * 0.09);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.3);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + idx * 0.09);
+                    osc.stop(now + idx * 0.09 + 0.3);
+                });
+            } catch (e) {}
+        }
+
+        function drawWheel() {
+            const size = 700;
+            canvas.width = size;
+            canvas.height = size;
+            const centerX = size / 2;
+            const centerY = size / 2;
+            const radius = centerX - 18;
+
+            ctx.clearRect(0, 0, size, size);
+
+            items.forEach((item, index) => {
+                const startAngle = index * sliceAngle;
+                const endAngle = startAngle + sliceAngle;
+
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.closePath();
+                ctx.fillStyle = item.color;
+                ctx.fill();
+
+                ctx.strokeStyle = '#dfc181';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(startAngle + sliceAngle / 2);
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.direction = 'rtl';
+                ctx.fillStyle = item.textColor;
+
+                ctx.font = '900 24px Estedad, system-ui, sans-serif';
+                ctx.fillText(item.name, radius * 0.62, 0);
+
+                ctx.restore();
+            });
+
+            for (let i = 0; i < 18; i++) {
+                const pinAngle = (i * (2 * Math.PI)) / 18;
+                const px = centerX + (radius - 4) * Math.cos(pinAngle);
+                const py = centerY + (radius - 4) * Math.sin(pinAngle);
+
+                ctx.beginPath();
+                ctx.arc(px, py, 6, 0, 2 * Math.PI);
+                ctx.fillStyle = '#22242a';
+                ctx.fill();
+                ctx.strokeStyle = '#e7caa1';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+            }
+        }
+
+        function pickWinnerIndex() {
+            const totalChance = items.reduce((acc, curr) => acc + curr.chance, 0);
+            let rand = Math.random() * totalChance;
+            for (let i = 0; i < items.length; i++) {
+                if (rand < items[i].chance) return i;
+                rand -= items[i].chance;
+            }
+            return 0;
+        }
+
+        function easeOut(t) {
+            return 1 - Math.pow(1 - t, 3.8);
+        }
+
+        function startSpin() {
+            if (isSpinning) return;
+            initAudio();
+            isSpinning = true;
+            closeModal();
+
+            mainSpinBtn.disabled = true;
+            centerSpinBtn.disabled = true;
+            mainSpinBtn.textContent = "در حال گردش...";
+
+            const winnerIndex = pickWinnerIndex();
+            currentWinner = items[winnerIndex];
+
+            const segmentCenter = winnerIndex * sliceDeg + sliceDeg / 2;
+            const targetAngle = (270 - segmentCenter + 360) % 360;
+
+            const startRot = currentRotation;
+            const fullTurns = 360 * 6;
+            const diff = (targetAngle - (startRot % 360) + 360) % 360;
+            const finalRot = startRot + fullTurns + diff;
+
+            const duration = 4800;
+            const startTime = performance.now();
+            let lastPeg = Math.floor((startRot % 360) / sliceDeg);
+
+            function animate(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = easeOut(progress);
+                const currentDeg = startRot + (finalRot - startRot) * eased;
+
+                currentRotation = currentDeg;
+                canvas.style.transform = `rotate(${currentDeg}deg)`;
+
+                const normDeg = ((currentDeg % 360) + 360) % 360;
+                const currentPeg = Math.floor((normDeg + sliceDeg / 2) / sliceDeg);
+
+                if (currentPeg !== lastPeg) {
+                    playTickSound();
+                    pointer.style.transform = 'translateX(-50%) rotate(-14deg)';
+                    setTimeout(() => {
+                        pointer.style.transform = 'translateX(-50%) rotate(0deg)';
+                    }, 40);
+                    lastPeg = currentPeg;
+                }
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    isSpinning = false;
+                    mainSpinBtn.disabled = false;
+                    centerSpinBtn.disabled = false;
+                    mainSpinBtn.textContent = "بچرخان و تخفیف بگیر";
+                    showPrize(currentWinner);
+                    playWinSound();
+                    triggerGoldConfetti();
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        function triggerGoldConfetti() {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+
+            const goldRibbons = [];
+            const colors = ['#e5c287', '#d4af37', '#f3e5ab', '#c99e32', '#ecd09f', '#edd5ab'];
+
+            for (let i = 0; i < 75; i++) {
+                goldRibbons.push({
+                    x: Math.random() * confettiCanvas.width,
+                    y: -40 - Math.random() * 200,
+                    width: Math.random() * 8 + 14,
+                    height: Math.random() * 18 + 24,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    vx: (Math.random() - 0.5) * 3,
+                    vy: Math.random() * 4 + 3,
+                    rotation: Math.random() * 360,
+                    vRot: (Math.random() - 0.5) * 6,
+                    oscillationSpeed: Math.random() * 0.05 + 0.02,
+                    oscillationAngle: Math.random() * Math.PI * 2
+                });
+            }
+
+            const startTime = performance.now();
+            const duration = 4000;
+
+            function renderConfetti(time) {
+                const elapsed = time - startTime;
+                confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+                goldRibbons.forEach((ribbon) => {
+                    ribbon.oscillationAngle += ribbon.oscillationSpeed;
+                    ribbon.x += Math.sin(ribbon.oscillationAngle) * 2 + ribbon.vx;
+                    ribbon.y += ribbon.vy;
+                    ribbon.rotation += ribbon.vRot;
+
+                    confettiCtx.save();
+                    confettiCtx.translate(ribbon.x, ribbon.y);
+                    confettiCtx.rotate((ribbon.rotation * Math.PI) / 180);
+                    confettiCtx.fillStyle = ribbon.color;
+                    confettiCtx.fillRect(-ribbon.width / 2, -ribbon.height / 2, ribbon.width, ribbon.height);
+                    confettiCtx.restore();
+                });
+
+                if (elapsed < duration) {
+                    confettiAnimationId = requestAnimationFrame(renderConfetti);
+                } else {
+                    confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+                }
+            }
+
+            if (confettiAnimationId) cancelAnimationFrame(confettiAnimationId);
+            confettiAnimationId = requestAnimationFrame(renderConfetti);
+        }
+
+        function showPrize(prize) {
+            modalTitle.textContent = prize.name === "پوچ" ? "پوچ" : `برنده «${prize.name}» شدید`;
+            modalDesc.textContent = prize.desc;
+
+            if (prize.code) {
+                codeContainer.style.display = 'flex';
+                couponCode.textContent = prize.code;
+            } else {
+                codeContainer.style.display = 'none';
+            }
+
+            if (prize.name === "یک شانس مجدد") {
+                modalActionBtn.textContent = "چرخش مجدد گردونه";
+                modalActionBtn.onclick = () => {
+                    closeModal();
+                    setTimeout(startSpin, 250);
+                };
+            } else {
+                modalActionBtn.textContent = prize.code ? "کپی کد و بستن" : "بستن";
+                modalActionBtn.onclick = () => {
+                    if (prize.code) copyCode(prize.code);
+                    closeModal();
+                };
+            }
+
+            prizeModal.classList.add('active');
+        }
+
+        function closeModal() {
+            prizeModal.classList.remove('active');
+        }
+
+        function copyCode(text) {
+            const ta = document.createElement("textarea");
+            ta.value = text;
+            ta.style.position = "fixed";
+            ta.style.left = "-9999px";
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand('copy');
+                copyIcon.innerHTML = '<polyline points="20 6 9 17 4 12"></polyline>';
+                copyIcon.style.color = '#16a34a';
+                setTimeout(() => {
+                    copyIcon.innerHTML = '<rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>';
+                    copyIcon.style.color = '';
+                }, 2000);
+            } catch (err) {}
+            ta.remove();
+        }
+
+        mainSpinBtn.addEventListener('click', startSpin);
+        centerSpinBtn.addEventListener('click', startSpin);
+        modalCloseBtn.addEventListener('click', closeModal);
+        copyCodeBtn.addEventListener('click', () => {
+            if (currentWinner && currentWinner.code) copyCode(currentWinner.code);
+        });
+
+        toggleSoundBtn.addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            if (soundEnabled) {
+                soundIcon.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>';
+                soundIcon.style.color = 'var(--red-primary)';
+            } else {
+                soundIcon.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line>';
+                soundIcon.style.color = 'var(--text-muted)';
+            }
+        });
+
+        window.addEventListener('load', drawWheel);
+    </script>
+</body>
+</html>
