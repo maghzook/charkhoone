@@ -2,9 +2,11 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>گردونه شانس مغزوک</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/estedad-font@v5.0.1/dist/font-face.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --red-primary: #dc2626;
@@ -12,8 +14,6 @@
             --gold-border: #e7caa1;
             --gold-dark: #dfc181;
             --bg-page: #f7f7f8;
-            --slice-dark: #1c1e24;
-            --slice-light: #ffffff;
             --text-main: #0f172a;
             --text-muted: #64748b;
         }
@@ -23,7 +23,7 @@
             margin: 0;
             padding: 0;
             -webkit-tap-highlight-color: transparent;
-            font-family: 'Estedad', system-ui, -apple-system, sans-serif;
+            font-family: 'Vazirmatn', system-ui, -apple-system, sans-serif;
             user-select: none;
         }
 
@@ -31,6 +31,7 @@
             background-color: var(--bg-page);
             color: var(--text-main);
             min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -39,12 +40,13 @@
 
         .container {
             width: 100%;
-            max-width: 480px;
-            min-height: 100vh;
+            max-width: 440px;
+            height: 100vh;
+            height: 100dvh;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 16px 20px 24px;
+            padding: 12px 16px;
             position: relative;
         }
 
@@ -52,20 +54,20 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding-bottom: 16px;
+            padding-bottom: 8px;
             border-bottom: 1px solid #e2e8f0;
             z-index: 10;
         }
 
         header h1 {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 900;
             color: var(--text-main);
             line-height: 1.2;
         }
 
         header p {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-muted);
             margin-top: 2px;
         }
@@ -73,8 +75,8 @@
         .icon-btn {
             background: #ffffff;
             border: 1px solid #e2e8f0;
-            padding: 8px;
-            border-radius: 12px;
+            padding: 6px;
+            border-radius: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -83,17 +85,10 @@
             transition: all 0.2s;
         }
 
-        .icon-btn:hover {
-            color: var(--red-primary);
-            border-color: #cbd5e1;
-        }
-
         .wheel-area {
             position: relative;
             margin: auto 0;
-            padding: 24px 0;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 10;
@@ -101,31 +96,38 @@
 
         .wheel-box {
             position: relative;
-            width: 320px;
-            height: 320px;
+            width: 290px;
+            height: 290px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        @media (min-width: 400px) {
+        @media (min-height: 680px) {
             .wheel-box {
-                width: 350px;
-                height: 350px;
+                width: 320px;
+                height: 320px;
+            }
+        }
+
+        @media (min-height: 750px) {
+            .wheel-box {
+                width: 340px;
+                height: 340px;
             }
         }
 
         .pointer {
             position: absolute;
-            top: -12px;
+            top: -10px;
             left: 50%;
             transform: translateX(-50%);
-            width: 28px;
-            height: 48px;
+            width: 26px;
+            height: 44px;
             background: var(--red-primary);
             clip-path: polygon(50% 100%, 0% 20%, 20% 0%, 80% 0%, 100% 20%);
             z-index: 30;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 12px -2px rgba(0, 0, 0, 0.25);
             transition: transform 0.08s ease-out;
             transform-origin: top center;
         }
@@ -133,11 +135,11 @@
         .pointer::after {
             content: '';
             position: absolute;
-            top: 6px;
+            top: 5px;
             left: 50%;
             transform: translateX(-50%);
-            width: 9px;
-            height: 9px;
+            width: 8px;
+            height: 8px;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 50%;
         }
@@ -146,11 +148,10 @@
             position: absolute;
             inset: 0;
             border-radius: 50%;
-            border: 10px solid var(--gold-border);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+            border: 8px solid var(--gold-border);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
             pointer-events: none;
             z-index: 10;
-            outline: 1px solid rgba(0, 0, 0, 0.08);
         }
 
         #wheelCanvas {
@@ -163,16 +164,16 @@
         .center-btn-wrapper {
             position: absolute;
             z-index: 20;
-            width: 92px;
-            height: 92px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             border: 4px solid var(--gold-border);
             background: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-            padding: 6px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+            padding: 5px;
         }
 
         .center-btn {
@@ -182,14 +183,13 @@
             background: var(--red-primary);
             border: 2px solid rgba(255, 255, 255, 0.85);
             color: #ffffff;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 900;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(220, 38, 38, 0.35);
-            transition: transform 0.1s, background-color 0.15s;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: transform 0.1s, background-color 0.15s;
         }
 
         .center-btn:active {
@@ -205,20 +205,21 @@
         footer {
             width: 100%;
             z-index: 10;
+            padding-bottom: 6px;
         }
 
         .main-spin-btn {
             width: 100%;
-            padding: 16px;
+            padding: 14px;
             background: var(--red-primary);
             color: #ffffff;
             border: none;
-            border-radius: 16px;
-            font-size: 16px;
+            border-radius: 14px;
+            font-size: 15px;
             font-weight: 900;
             cursor: pointer;
-            box-shadow: 0 10px 25px rgba(220, 38, 38, 0.25);
-            transition: transform 0.1s, background-color 0.2s, opacity 0.2s;
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.22);
+            transition: transform 0.1s, background-color 0.2s;
         }
 
         .main-spin-btn:active {
@@ -244,7 +245,7 @@
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.65);
             backdrop-filter: blur(4px);
             display: flex;
             align-items: center;
@@ -253,7 +254,7 @@
             z-index: 100;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.25s ease, visibility 0.25s ease;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
         }
 
         .modal-overlay.active {
@@ -264,15 +265,14 @@
         .modal-box {
             background: #ffffff;
             width: 100%;
-            max-width: 360px;
-            border-radius: 24px;
-            padding: 24px 20px;
+            max-width: 340px;
+            border-radius: 20px;
+            padding: 20px 16px;
             text-align: center;
             position: relative;
-            border: 1px solid #f1f5f9;
-            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
-            transform: scale(0.92);
-            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            transform: scale(0.94);
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .modal-overlay.active .modal-box {
@@ -281,8 +281,8 @@
 
         .modal-close {
             position: absolute;
-            top: 16px;
-            left: 16px;
+            top: 14px;
+            left: 14px;
             background: transparent;
             border: none;
             color: #94a3b8;
@@ -292,49 +292,76 @@
         }
 
         .modal-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 900;
             color: var(--text-main);
-            margin: 12px 0 6px;
+            margin: 8px 0 6px;
         }
 
         .modal-desc {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-muted);
             line-height: 1.6;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
+        }
+
+        .phone-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            text-align: center;
+            direction: ltr;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .phone-input:focus {
+            border-color: var(--red-primary);
+        }
+
+        .input-error {
+            color: var(--red-primary);
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: none;
         }
 
         .code-box {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
-            border-radius: 14px;
-            padding: 10px 14px;
+            border-radius: 12px;
+            padding: 10px 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .code-label {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-muted);
         }
 
         .code-val-wrapper {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .code-val {
             font-family: monospace;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 900;
             color: var(--red-primary);
             background: #ffffff;
-            padding: 4px 10px;
-            border-radius: 8px;
+            padding: 3px 8px;
+            border-radius: 6px;
             border: 1px solid #e2e8f0;
             letter-spacing: 1px;
             text-transform: lowercase;
@@ -343,36 +370,32 @@
         .copy-btn {
             background: #e2e8f0;
             border: none;
-            border-radius: 8px;
-            padding: 6px;
+            border-radius: 6px;
+            padding: 5px;
             cursor: pointer;
             display: flex;
             color: #334155;
-            transition: background-color 0.15s;
-        }
-
-        .copy-btn:hover {
-            background: #cbd5e1;
         }
 
         .modal-action-btn {
             width: 100%;
-            padding: 14px;
+            padding: 13px;
             background: var(--red-primary);
             color: #ffffff;
             border: none;
             border-radius: 12px;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 900;
             cursor: pointer;
-            box-shadow: 0 6px 15px rgba(220, 38, 38, 0.2);
+            text-decoration: none;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
+            box-shadow: 0 6px 14px rgba(220, 38, 38, 0.2);
         }
 
-        .modal-action-btn:hover {
+        .modal-action-btn:active {
             background: var(--red-hover);
         }
     </style>
@@ -388,7 +411,7 @@
                 <p>دریافت کد تخفیف اختصاصی</p>
             </div>
             <button class="icon-btn" id="toggleSoundBtn" title="قطع یا وصل صدا">
-                <svg id="soundIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--red-primary);">
+                <svg id="soundIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--red-primary);">
                     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
                     <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
                     <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
@@ -412,10 +435,30 @@
         </footer>
     </div>
 
+    <!-- دیالوگ دریافت شماره تماس -->
+    <div class="modal-overlay" id="leadModal">
+        <div class="modal-box">
+            <button class="modal-close" id="leadModalClose">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <h2 class="modal-title">شماره همراه خود را وارد کنید</h2>
+            <p class="modal-desc">برای فعال‌سازی و ارسال کد تخفیف، شماره موبایل خود را وارد نمایید.</p>
+            
+            <input type="tel" id="phoneInput" class="phone-input" placeholder="09123456789" maxlength="11" inputmode="numeric">
+            <div class="input-error" id="phoneError">شماره موبایل معتبر نیست (۱۱ رقم با ۰۹)</div>
+
+            <button class="modal-action-btn" id="submitPhoneBtn">تایید و شروع چرخش</button>
+        </div>
+    </div>
+
+    <!-- دیالوگ اعلام نتیجه و ورود به سایت -->
     <div class="modal-overlay" id="prizeModal">
         <div class="modal-box">
             <button class="modal-close" id="modalCloseBtn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
@@ -424,11 +467,11 @@
             <p class="modal-desc" id="modalDesc">توضیحات جایزه</p>
             
             <div class="code-box" id="codeContainer">
-                <span class="code-label">کد تخفیف شما:</span>
+                <span class="code-label">کد تخفیف:</span>
                 <div class="code-val-wrapper">
                     <span class="code-val" id="couponCode"></span>
                     <button class="copy-btn" id="copyCodeBtn" title="کپی کد">
-                        <svg id="copyIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg id="copyIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                         </svg>
@@ -436,16 +479,18 @@
                 </div>
             </div>
 
-            <button class="modal-action-btn" id="modalActionBtn">بستن</button>
+            <a href="#" class="modal-action-btn" id="modalActionBtn" target="_blank" rel="noopener">ورود به سایت و ثبت خرید</a>
         </div>
     </div>
 
     <script>
+        const GOOGLE_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbz0QIASXtOl8IG_wIAUeb3LYQjPJWxsCqK8bTNZSaPHi2WANzJCOHwnVeoOFEnCB-W4CQ/exec";
+
         const items = [
-            { id: 1, name: "تخفیف ۱۰٪", chance: 75, code: "m10y", color: "#1c1e24", textColor: "#ffffff", desc: "کد تخفیف ۱۰ درصدی برای سفارش از محصولات مغزوک" },
-            { id: 2, name: "تخفیف ۲۰٪", chance: 20, code: "m20zk", color: "#ffffff", textColor: "#1c1e24", desc: "کد تخفیف ۲۰ درصدی ویژه خرید محصولات مغزوک" },
-            { id: 3, name: "تخفیف ۱ میلیونی", chance: 0, code: null, color: "#1c1e24", textColor: "#ffffff", desc: "کارت هدیه خرید ۱ میلیون تومانی مغزوک" },
-            { id: 4, name: "تخفیف ۲ میلیونی", chance: 0, code: null, color: "#ffffff", textColor: "#1c1e24", desc: "جایزه ۲ میلیون تومانی مغزوک" },
+            { id: 1, name: "تخفیف ۱۰٪", chance: 75, code: "m10y", color: "#1c1e24", textColor: "#ffffff", desc: "کد تخفیف ۱۰ درصدی فعال شد." },
+            { id: 2, name: "تخفیف ۲۰٪", chance: 20, code: "m20zk", color: "#ffffff", textColor: "#1c1e24", desc: "کد تخفیف ۲۰ درصدی فعال شد." },
+            { id: 3, name: "تخفیف ۱ میلیونی", chance: 0, code: null, color: "#1c1e24", textColor: "#ffffff", desc: "کارت هدیه ۱ میلیون تومانی" },
+            { id: 4, name: "تخفیف ۲ میلیونی", chance: 0, code: null, color: "#ffffff", textColor: "#1c1e24", desc: "جایزه ۲ میلیون تومانی" },
             { id: 5, name: "پوچ", chance: 0, code: null, color: "#1c1e24", textColor: "#ffffff", desc: "فرصت‌های بعدی را امتحان کنید" },
             { id: 6, name: "یک شانس مجدد", chance: 5, code: null, color: "#ffffff", textColor: "#1c1e24", desc: "یک فرصت دیگر برای چرخش گردونه" }
         ];
@@ -458,6 +503,12 @@
         const toggleSoundBtn = document.getElementById('toggleSoundBtn');
         const soundIcon = document.getElementById('soundIcon');
         
+        const leadModal = document.getElementById('leadModal');
+        const leadModalClose = document.getElementById('leadModalClose');
+        const phoneInput = document.getElementById('phoneInput');
+        const phoneError = document.getElementById('phoneError');
+        const submitPhoneBtn = document.getElementById('submitPhoneBtn');
+
         const prizeModal = document.getElementById('prizeModal');
         const modalCloseBtn = document.getElementById('modalCloseBtn');
         const modalTitle = document.getElementById('modalTitle');
@@ -479,6 +530,7 @@
         let soundEnabled = true;
         let audioCtx = null;
         let currentWinner = null;
+        let userPhoneNumber = "";
         let confettiAnimationId = null;
 
         function initAudio() {
@@ -533,7 +585,7 @@
             canvas.height = size;
             const centerX = size / 2;
             const centerY = size / 2;
-            const radius = centerX - 18;
+            const radius = centerX - 16;
 
             ctx.clearRect(0, 0, size, size);
 
@@ -560,7 +612,7 @@
                 ctx.direction = 'rtl';
                 ctx.fillStyle = item.textColor;
 
-                ctx.font = '900 24px Estedad, system-ui, sans-serif';
+                ctx.font = '900 24px Vazirmatn, system-ui, sans-serif';
                 ctx.fillText(item.name, radius * 0.62, 0);
 
                 ctx.restore();
@@ -595,9 +647,48 @@
             return 1 - Math.pow(1 - t, 3.8);
         }
 
-        function startSpin() {
+        function handleSpinRequest() {
             if (isSpinning) return;
             initAudio();
+            if (!userPhoneNumber) {
+                leadModal.classList.add('active');
+                phoneInput.focus();
+                return;
+            }
+            startSpin();
+        }
+
+        function submitPhone() {
+            const val = phoneInput.value.trim();
+            const iranPhoneRegex = /^09[0-9]{9}$/;
+            if (!iranPhoneRegex.test(val)) {
+                phoneError.style.display = 'block';
+                return;
+            }
+            phoneError.style.display = 'none';
+            userPhoneNumber = val;
+            leadModal.classList.remove('active');
+            startSpin();
+        }
+
+        function sendLeadToGoogleSheet(phone, prizeName, couponCode) {
+            if (!GOOGLE_SHEET_WEBHOOK_URL) return;
+            const data = {
+                phone: phone,
+                prize: prizeName,
+                code: couponCode || '-',
+                date: new Date().toLocaleString('fa-IR')
+            };
+            fetch(GOOGLE_SHEET_WEBHOOK_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).catch(() => {});
+        }
+
+        function startSpin() {
+            if (isSpinning) return;
             isSpinning = true;
             closeModal();
 
@@ -651,6 +742,7 @@
                     showPrize(currentWinner);
                     playWinSound();
                     triggerGoldConfetti();
+                    sendLeadToGoogleSheet(userPhoneNumber, currentWinner.name, currentWinner.code);
                 }
             }
 
@@ -725,15 +817,18 @@
 
             if (prize.name === "یک شانس مجدد") {
                 modalActionBtn.textContent = "چرخش مجدد گردونه";
-                modalActionBtn.onclick = () => {
+                modalActionBtn.href = "#";
+                modalActionBtn.onclick = (e) => {
+                    e.preventDefault();
                     closeModal();
                     setTimeout(startSpin, 250);
                 };
             } else {
-                modalActionBtn.textContent = prize.code ? "کپی کد و بستن" : "بستن";
+                modalActionBtn.textContent = "ورود به سایت و ثبت خرید";
+                const utmCode = prize.code ? prize.code : "direct";
+                modalActionBtn.href = `https://maghzook.com/?utm_source=lucky_wheel&utm_medium=landing&utm_campaign=wheel_discount&utm_content=${utmCode}`;
                 modalActionBtn.onclick = () => {
                     if (prize.code) copyCode(prize.code);
-                    closeModal();
                 };
             }
 
@@ -763,9 +858,16 @@
             ta.remove();
         }
 
-        mainSpinBtn.addEventListener('click', startSpin);
-        centerSpinBtn.addEventListener('click', startSpin);
+        mainSpinBtn.addEventListener('click', handleSpinRequest);
+        centerSpinBtn.addEventListener('click', handleSpinRequest);
+        submitPhoneBtn.addEventListener('click', submitPhone);
+        phoneInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') submitPhone();
+        });
+
+        leadModalClose.addEventListener('click', () => leadModal.classList.remove('active'));
         modalCloseBtn.addEventListener('click', closeModal);
+
         copyCodeBtn.addEventListener('click', () => {
             if (currentWinner && currentWinner.code) copyCode(currentWinner.code);
         });
