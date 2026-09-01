@@ -445,12 +445,27 @@
                 </svg>
             </button>
             <h2 class="modal-title">شماره همراه خود را وارد کنید</h2>
-            <p class="modal-desc">برای فعال‌سازی و ارسال کد تخفیف، شماره موبایل خود را وارد نمایید.</p>
+            <p class="modal-desc">برای فعال‌سازی و دریافت کد تخفیف، شماره تماس خود را وارد نمایید.</p>
             
-            <input type="tel" id="phoneInput" class="phone-input" placeholder="09123456789" maxlength="11" inputmode="numeric">
-            <div class="input-error" id="phoneError">شماره موبایل معتبر نیست (۱۱ رقم با ۰۹)</div>
+            <input type="text" id="phoneInput" class="phone-input" placeholder="۰۹۱۲۳۴۵۶۷۸۹" inputmode="numeric">
+            <div class="input-error" id="phoneError">شماره وارد شده معتبر نیست.</div>
 
             <button class="modal-action-btn" id="submitPhoneBtn">تایید و شروع چرخش</button>
+        </div>
+    </div>
+
+    <!-- دیالوگ محدودیت چرخش -->
+    <div class="modal-overlay" id="limitModal">
+        <div class="modal-box">
+            <button class="modal-close" id="limitModalClose">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <h2 class="modal-title">محدودیت تعداد چرخش</h2>
+            <p class="modal-desc" id="limitDesc">سقف ۳ بار استفاده تکمیل شده است. لطفاً پس از گذشت ۱ ساعت دوباره امتحان کنید.</p>
+            <button class="modal-action-btn" id="limitModalBtn">متوجه شدم</button>
         </div>
     </div>
 
@@ -509,6 +524,11 @@
         const phoneError = document.getElementById('phoneError');
         const submitPhoneBtn = document.getElementById('submitPhoneBtn');
 
+        const limitModal = document.getElementById('limitModal');
+        const limitModalClose = document.getElementById('limitModalClose');
+        const limitModalBtn = document.getElementById('limitModalBtn');
+        const limitDesc = document.getElementById('limitDesc');
+
         const prizeModal = document.getElementById('prizeModal');
         const modalCloseBtn = document.getElementById('modalCloseBtn');
         const modalTitle = document.getElementById('modalTitle');
@@ -532,6 +552,62 @@
         let currentWinner = null;
         let userPhoneNumber = "";
         let confettiAnimationId = null;
+
+        function normalizePhoneNumber(input) {
+            if (!input) return "";
+            const persianDigits = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+            const arabicDigits  = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+            let str = input.toString().trim();
+            for (let i = 0; i < 10; i++) {
+                str = str.split(persianDigits[i]).join(i.toString());
+                str = str.split(arabicDigits[i]).join(i.toString());
+            }
+            str = str.replace(/\D/g, '');
+            if (str.startsWith('98') && str.length === 12) {
+                str = '0' + str.slice(2);
+            }
+            if (str.length === 10 && str.startsWith('9')) {
+                str = '0' + str;
+            }
+            return str;
+        }
+
+        function checkSpinLimit() {
+            try {
+                const raw = localStorage.getItem('maghzook_spin_limit');
+                if (!raw) return { allowed: true };
+                const data = JSON.parse(raw);
+                const now = Date.now();
+                if (data.blockedUntil && now < data.blockedUntil) {
+                    const remainingMin = Math.ceil((data.blockedUntil - now) / 60000);
+                    return { allowed: false, remainingMin };
+                }
+                if (data.blockedUntil && now >= data.blockedUntil) {
+                    localStorage.removeItem('maghzook_spin_limit');
+                    return { allowed: true };
+                }
+                return { allowed: true, count: data.count || 0 };
+            } catch (e) {
+                return { allowed: true };
+            }
+        }
+
+        function recordSpinUsage() {
+            try {
+                const now = Date.now();
+                const raw = localStorage.getItem('maghzook_spin_limit');
+                let count = 1;
+                if (raw) {
+                    const data = JSON.parse(raw);
+                    count = (data.count || 0) + 1;
+                }
+                let blockedUntil = 0;
+                if (count >= 3) {
+                    blockedUntil = now + (60 * 60 * 1000);
+                }
+                localStorage.setItem('maghzook_spin_limit', JSON.stringify({ count, blockedUntil }));
+            } catch (e) {}
+        }
 
         function initAudio() {
             if (!audioCtx) {
@@ -650,6 +726,14 @@
         function handleSpinRequest() {
             if (isSpinning) return;
             initAudio();
+
+            const limitStatus = checkSpinLimit();
+            if (!limitStatus.allowed) {
+                limitDesc.textContent = `سقف ۳ بار چرخش استفاده شده است. لطفاً ${limitStatus.remainingMin} دقیقه دیگر مجدداً تلاش کنید.`;
+                limitModal.classList.add('active');
+                return;
+            }
+
             if (!userPhoneNumber) {
                 leadModal.classList.add('active');
                 phoneInput.focus();
@@ -659,14 +743,14 @@
         }
 
         function submitPhone() {
-            const val = phoneInput.value.trim();
-            const iranPhoneRegex = /^09[0-9]{9}$/;
-            if (!iranPhoneRegex.test(val)) {
+            const rawVal = phoneInput.value;
+            const cleaned = normalizePhoneNumber(rawVal);
+            if (cleaned.length < 10 || cleaned.length > 11) {
                 phoneError.style.display = 'block';
                 return;
             }
             phoneError.style.display = 'none';
-            userPhoneNumber = val;
+            userPhoneNumber = cleaned;
             leadModal.classList.remove('active');
             startSpin();
         }
@@ -739,6 +823,7 @@
                     mainSpinBtn.disabled = false;
                     centerSpinBtn.disabled = false;
                     mainSpinBtn.textContent = "بچرخان و تخفیف بگیر";
+                    recordSpinUsage();
                     showPrize(currentWinner);
                     playWinSound();
                     triggerGoldConfetti();
@@ -821,7 +906,7 @@
                 modalActionBtn.onclick = (e) => {
                     e.preventDefault();
                     closeModal();
-                    setTimeout(startSpin, 250);
+                    setTimeout(handleSpinRequest, 250);
                 };
             } else {
                 modalActionBtn.textContent = "ورود به سایت و ثبت خرید";
@@ -866,6 +951,8 @@
         });
 
         leadModalClose.addEventListener('click', () => leadModal.classList.remove('active'));
+        limitModalClose.addEventListener('click', () => limitModal.classList.remove('active'));
+        limitModalBtn.addEventListener('click', () => limitModal.classList.remove('active'));
         modalCloseBtn.addEventListener('click', closeModal);
 
         copyCodeBtn.addEventListener('click', () => {
