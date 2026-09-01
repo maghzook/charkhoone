@@ -464,7 +464,7 @@
                 </svg>
             </button>
             <h2 class="modal-title">محدودیت تعداد چرخش</h2>
-            <p class="modal-desc" id="limitDesc">سقف ۳ بار استفاده تکمیل شده است. لطفاً پس از گذشت ۱ ساعت دوباره امتحان کنید.</p>
+            <p class="modal-desc" id="limitDesc">شما قبلاً از فرصت چرخش خود استفاده کرده‌اید. لطفاً پس از گذشت ۱ ساعت دوباره امتحان کنید.</p>
             <button class="modal-action-btn" id="limitModalBtn">متوجه شدم</button>
         </div>
     </div>
@@ -595,17 +595,8 @@
         function recordSpinUsage() {
             try {
                 const now = Date.now();
-                const raw = localStorage.getItem('maghzook_spin_limit');
-                let count = 1;
-                if (raw) {
-                    const data = JSON.parse(raw);
-                    count = (data.count || 0) + 1;
-                }
-                let blockedUntil = 0;
-                if (count >= 3) {
-                    blockedUntil = now + (60 * 60 * 1000);
-                }
-                localStorage.setItem('maghzook_spin_limit', JSON.stringify({ count, blockedUntil }));
+                const blockedUntil = now + (60 * 60 * 1000); // بلاک به مدت ۱ ساعت پس از ۱ بار چرخش
+                localStorage.setItem('maghzook_spin_limit', JSON.stringify({ count: 1, blockedUntil }));
             } catch (e) {}
         }
 
@@ -729,7 +720,7 @@
 
             const limitStatus = checkSpinLimit();
             if (!limitStatus.allowed) {
-                limitDesc.textContent = `سقف ۳ بار چرخش استفاده شده است. لطفاً ${limitStatus.remainingMin} دقیقه دیگر مجدداً تلاش کنید.`;
+                limitDesc.textContent = `شما قبلاً از شانس چرخش خود استفاده کرده‌اید. لطفاً ${limitStatus.remainingMin} دقیقه دیگر مجدداً تلاش کنید.`;
                 limitModal.classList.add('active');
                 return;
             }
@@ -823,7 +814,9 @@
                     mainSpinBtn.disabled = false;
                     centerSpinBtn.disabled = false;
                     mainSpinBtn.textContent = "بچرخان و تخفیف بگیر";
-                    recordSpinUsage();
+                    if (currentWinner.name !== "یک شانس مجدد") {
+                        recordSpinUsage();
+                    }
                     showPrize(currentWinner);
                     playWinSound();
                     triggerGoldConfetti();
